@@ -6,7 +6,7 @@ from sqlalchemy.orm import declarative_base
 
 engine = create_engine('sqlite:///atividades.db')
 db_session = scoped_session(sessionmaker(autocommit=False,
-                                         binds=engine))
+                                         bind=engine))
 Base = declarative_base()
 Base.query = db_session.query_property()
 
@@ -18,6 +18,15 @@ class Pessoas(Base):
 
     def __repr__(self):
         return '<Pessoas {}>'.format(self.nome)
+
+    def save(self):
+        db_session.add(self)
+        db_session.commit()
+
+    def delete(self):
+        db_session.delete(self)
+        db_session.commit()
+
 
 
 class Atividades(Base):
