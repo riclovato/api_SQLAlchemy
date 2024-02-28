@@ -81,11 +81,27 @@ class ListaAtividades(Resource):
         }
         return response
 
+    def put(self,id):
+        atividade = Atividades.query.filter_by(id=id).first()
+        dados = request.json
+        if 'nome' in dados:
+            atividade.nome = dados['nome']
+        if 'pessoa' in dados:
+            pessoa = Pessoas.query.filter_by(nome=dados['pessoa']).first()
+            atividade.pessoa = pessoa
+        atividade.save()
+        response = {
+            'id': atividade.id,
+            'nome': atividade.nome,
+            'pessoa': atividade.pessoa.nome
+        }
+        return response
+
 
 
 api.add_resource(Pessoa, '/pessoa/<string:nome>/')
 api.add_resource(ListPessoas, '/pessoa/')
-api.add_resource(ListaAtividades, '/atividades/')
+api.add_resource(ListaAtividades, '/atividades/', '/atividades/<int:id>')
 
 if __name__ == '__main__':
     app.run(debug=True)
